@@ -11,15 +11,8 @@ import { RabbitmqService } from "./rabbitmq.service";
                 {
                     name: 'auth-exchange',
                     type: 'direct',
-                    createExchangeIfNotExists: true
-                }
-            ],
-            queues: [
-                {
-                    name: 'auth-queue',
-                    createQueueIfNotExists: true,
-                    exchange: 'auth-exchange'
-                }
+                    createExchangeIfNotExists: true,
+                },
             ],
             uri: process.env.RABBITMQ_URI,
             enableControllerDiscovery: true

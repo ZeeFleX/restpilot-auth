@@ -8,4 +8,9 @@ export class AppService {
   test(data): any {
     return data;
   }
+
+  test2(data): any {
+    return 'Тест второй';
+  }
 }
+

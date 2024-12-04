@@ -9,9 +9,18 @@ export class AppController {
   @RabbitRPC({
     exchange: 'auth-exchange',
     routingKey: 'auth.test',
-    queue: 'auth-queue'
+    queue: 'auth.test'
   })
-  async test(data: any) {
+  async testHandler(data: any) {
     return this.appService.test(data);
+  }
+
+  @RabbitRPC({
+    exchange: 'auth-exchange',
+    routingKey: 'auth.test2',
+    queue: 'auth.test2'
+  })
+  async test2Handler(data: any) {
+    return this.appService.test2(data);
   }
 }
