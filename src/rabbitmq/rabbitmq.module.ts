@@ -18,7 +18,6 @@ import { RabbitmqService } from "./rabbitmq.service";
                 {
                     name: 'auth-queue',
                     createQueueIfNotExists: true,
-                    routingKey: 'authService',
                     exchange: 'auth-exchange'
                 }
             ],
