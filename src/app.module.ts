@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
-import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
@@ -11,7 +11,7 @@ import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
       isGlobal: true,
     }),
     DatabaseModule,
-    RabbitMQModule,
+    RabbitmqModule,
   ],
   controllers: [AppController],
   providers: [AppService],
