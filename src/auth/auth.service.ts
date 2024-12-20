@@ -5,8 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../database/prisma.service';
-import { SignupDto } from './dto/signup.dto';
-import { SigninDto } from './dto/signin.dto';
+import { ISignInRequestDTO, ISignUpRequestDTO } from 'src/types/shared';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -16,7 +15,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signup(signupDto: SignupDto) {
+  async signup(signupDto: ISignUpRequestDTO) {
     const { phone, password } = signupDto;
 
     // Check if user already exists
@@ -108,7 +107,7 @@ export class AuthService {
     };
   }
 
-  async signin(signinDto: SigninDto) {
+  async signin(signinDto: ISignInRequestDTO) {
     const user = await this.validateUser(signinDto.phone, signinDto.password);
 
     const payload = {
@@ -119,7 +118,7 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload),
     };
   }
 }
