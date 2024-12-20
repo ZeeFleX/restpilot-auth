@@ -15,53 +15,60 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signup(signupDto: ISignUpRequestDTO) {
-    const { phone, password } = signupDto;
+  async signUp(signUpDto: ISignUpRequestDTO) {
+    try {
+      const { phone, password } = signUpDto;
 
-    // Check if user already exists
-    const existingUser = await this.prisma.user.findUnique({
-      where: { phone },
-    });
+      // Check if user already exists
+      const existingUser = await this.prisma.user.findUnique({
+        where: { phone },
+      });
 
-    if (existingUser) {
-      throw new ConflictException('User with this phone number already exists');
-    }
+      if (existingUser) {
+        throw new ConflictException(
+          'User with this phone number already exists',
+        );
+      }
 
-    // Hash password
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
+      // Hash password
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Get the CLIENT role
-    const clientRole = await this.prisma.role.findUnique({
-      where: { name: 'CLIENT' },
-    });
+      // Get the CLIENT role
+      const clientRole = await this.prisma.role.findUnique({
+        where: { name: 'CLIENT' },
+      });
 
-    if (!clientRole) {
-      throw new Error(
-        'CLIENT role not found. Please run database seeds first.',
-      );
-    }
+      if (!clientRole) {
+        throw new Error(
+          'CLIENT role not found. Please run database seeds first.',
+        );
+      }
 
-    // Create new user with CLIENT role
-    const user = await this.prisma.user.create({
-      data: {
-        phone,
-        password: hashedPassword,
-        roleId: clientRole.id,
-      },
-      select: {
-        id: true,
-        phone: true,
-        role: {
-          select: {
-            name: true,
-          },
+      // Create new user with CLIENT role
+      const user = await this.prisma.user.create({
+        data: {
+          phone,
+          password: hashedPassword,
+          roleId: clientRole.id,
         },
-        createdAt: true,
-      },
-    });
+        select: {
+          id: true,
+          phone: true,
+          role: {
+            select: {
+              name: true,
+            },
+          },
+          createdAt: true,
+        },
+      });
 
-    return user;
+      return user;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   }
 
   async validateUser(phone: string, password: string): Promise<any> {
@@ -107,8 +114,8 @@ export class AuthService {
     };
   }
 
-  async signin(signinDto: ISignInRequestDTO) {
-    const user = await this.validateUser(signinDto.phone, signinDto.password);
+  async signIn(signInDto: ISignInRequestDTO) {
+    const user = await this.validateUser(signInDto.phone, signInDto.password);
 
     const payload = {
       sub: user.id,
