@@ -1,19 +1,19 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
-import { ISignUpRequestDTO, ISignInRequestDTO } from 'src/types/shared';
+import { AuthDTO } from 'src/types/shared';
 
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @MessagePattern('user.signUp')
-  async signup(data: ISignUpRequestDTO) {
+  async signup(data: AuthDTO.Request.SignUp) {
     return this.authService.signUp(data);
   }
 
   @MessagePattern('user.signIn')
-  async signin(data: ISignInRequestDTO) {
+  async signin(data: AuthDTO.Request.SignIn) {
     return this.authService.signIn(data);
   }
 }

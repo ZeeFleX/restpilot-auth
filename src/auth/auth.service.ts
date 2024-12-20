@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../database/prisma.service';
-import { ISignInRequestDTO, ISignUpRequestDTO } from 'src/types/shared';
+import { AuthDTO } from 'src/types/shared';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signUp(signUpDto: ISignUpRequestDTO) {
+  async signUp(signUpDto: AuthDTO.Request.SignUp) {
     try {
       const { phone, password } = signUpDto;
 
@@ -114,7 +114,7 @@ export class AuthService {
     };
   }
 
-  async signIn(signInDto: ISignInRequestDTO) {
+  async signIn(signInDto: AuthDTO.Request.SignIn) {
     const user = await this.validateUser(signInDto.phone, signInDto.password);
 
     const payload = {
