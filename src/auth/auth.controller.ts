@@ -7,13 +7,14 @@ import { AuthDTO } from 'src/types/shared';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @MessagePattern('user.signUp')
+  @MessagePattern('auth.user.signUp')
   async signup(data: AuthDTO.Request.SignUp) {
     return this.authService.signUp(data);
   }
 
-  @MessagePattern('user.signIn')
+  @MessagePattern('auth.user.signIn')
   async signin(data: AuthDTO.Request.SignIn) {
+    console.log(data);
     return this.authService.signIn(data);
   }
 }
