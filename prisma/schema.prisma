@@ -8,11 +8,11 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   phone     String   @unique
   password  String
   name      String?
-  roleId    Int      // Foreign key to Role
+  roleId    Int // Foreign key to Role
   role      Role     @relation(fields: [roleId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -21,11 +21,11 @@ model User {
 }
 
 model Role {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique // 'ADMIN', 'OWNER', 'EMPLOYEE', 'CLIENT'
+  id          Int      @id @default(autoincrement())
+  name        String   @unique // 'ADMIN', 'OWNER', 'EMPLOYEE', 'CLIENT'
   description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Связи
   users           User[]
@@ -33,22 +33,22 @@ model Role {
 }
 
 model Permission {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
   description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Связи
   rolePermissions RolePermission[]
 }
 
 model RolePermission {
-  id           Int        @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   roleId       Int
   permissionId Int
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Связи
   role       Role       @relation(fields: [roleId], references: [id])

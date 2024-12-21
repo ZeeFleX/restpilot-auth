@@ -12,9 +12,13 @@ export class AuthController {
     return this.authService.signUp(data);
   }
 
+  @MessagePattern('auth.user.delete')
+  async deleteUser(data: AuthDTO.Request.UserDelete) {
+    return this.authService.deleteUser(data);
+  }
+
   @MessagePattern('auth.user.signIn')
   async signin(data: AuthDTO.Request.SignIn) {
-    console.log(data);
     return this.authService.signIn(data);
   }
 }

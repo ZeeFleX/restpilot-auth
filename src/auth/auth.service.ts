@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../database/prisma.service';
 import { AuthDTO } from 'src/types/shared';
 import * as bcrypt from 'bcrypt';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthService {
@@ -25,9 +26,10 @@ export class AuthService {
       });
 
       if (existingUser) {
-        throw new ConflictException(
-          'User with this phone number already exists',
-        );
+        throw new RpcException({
+          code: 1001,
+          message: 'USER_ALREADY_EXISTS',
+        });
       }
 
       // Hash password
@@ -66,7 +68,6 @@ export class AuthService {
 
       return user;
     } catch (error) {
-      console.log(error);
       return error;
     }
   }
@@ -127,5 +128,18 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign(payload),
     };
+  }
+
+  async deleteUser({ id }: AuthDTO.Request.UserDelete) {
+    try {
+      const user = await this.prisma.user.delete({
+        where: {
+          id,
+        },
+      });
+      return user;
+    } catch (error) {
+      return error;
+    }
   }
 }
