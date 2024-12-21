@@ -8,6 +8,7 @@ import { PrismaService } from '../database/prisma.service';
 import { AuthDTO } from 'shared-types';
 import * as bcrypt from 'bcrypt';
 import { RpcException } from '@nestjs/microservices';
+import { Logger } from 'shared-functions';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  @Logger('yellow')
   async signUp(signUpDto: AuthDTO.Request.SignUp) {
     try {
       const { phone, password } = signUpDto;
@@ -72,6 +74,7 @@ export class AuthService {
     }
   }
 
+  @Logger('yellow')
   async validateUser(phone: string, password: string): Promise<any> {
     const user = await this.prisma.user.findUnique({
       where: { phone },
@@ -115,6 +118,7 @@ export class AuthService {
     };
   }
 
+  @Logger('yellow')
   async signIn(signInDto: AuthDTO.Request.SignIn) {
     const user = await this.validateUser(signInDto.phone, signInDto.password);
 
@@ -130,6 +134,7 @@ export class AuthService {
     };
   }
 
+  @Logger('yellow')
   async deleteUser({ id }: AuthDTO.Request.UserDelete) {
     try {
       const user = await this.prisma.user.delete({
