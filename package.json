@@ -65,7 +65,8 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3",
-    "shared-types": "file:../shared-types"
+    "shared-types": "file:../shared-types",
+    "shared-functions": "file:../shared-functions"
   },
   "jest": {
     "moduleFileExtensions": [
