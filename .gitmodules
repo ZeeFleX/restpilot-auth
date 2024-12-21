@@ -1,3 +1,0 @@
-[submodule "src/types/shared"]
-	path = src/types/shared
-	url = git@github.com:ZeeFleX/restpilot-shared-types.git

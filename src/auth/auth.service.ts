@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../database/prisma.service';
-import { AuthDTO } from 'src/types/shared';
+import { AuthDTO } from 'shared-types';
 import * as bcrypt from 'bcrypt';
 import { RpcException } from '@nestjs/microservices';
 
