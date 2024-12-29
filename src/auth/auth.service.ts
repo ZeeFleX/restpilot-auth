@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  ConflictException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../database/prisma.service';
 import { AuthDTO } from 'shared-types';
@@ -20,7 +16,22 @@ export class AuthService {
   @Logger('yellow')
   async signUp(signUpDto: AuthDTO.Request.SignUp) {
     try {
-      const { phone, password } = signUpDto;
+      const {
+        phone,
+        password,
+        confirmPassword,
+        firstname,
+        lastname,
+        surname,
+        email,
+      } = signUpDto;
+
+      if (password !== confirmPassword) {
+        throw new RpcException({
+          code: 1002,
+          message: 'PASSWORD_MISMATCH',
+        });
+      }
 
       // Check if user already exists
       const existingUser = await this.prisma.user.findUnique({
@@ -40,7 +51,7 @@ export class AuthService {
 
       // Get the CLIENT role
       const clientRole = await this.prisma.role.findUnique({
-        where: { name: 'CLIENT' },
+        where: { name: signUpDto.role || 'CLIENT' },
       });
 
       if (!clientRole) {
@@ -54,11 +65,23 @@ export class AuthService {
         data: {
           phone,
           password: hashedPassword,
-          roleId: clientRole.id,
+          firstname,
+          lastname,
+          surname,
+          email,
+          role: {
+            connect: {
+              id: clientRole.id,
+            },
+          },
         },
         select: {
           id: true,
           phone: true,
+          email: true,
+          firstname: true,
+          lastname: true,
+          surname: true,
           role: {
             select: {
               name: true,
@@ -70,6 +93,7 @@ export class AuthService {
 
       return user;
     } catch (error) {
+      console.log(error);
       return error;
     }
   }
