@@ -120,42 +120,59 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new RpcException({
+        code: 1003,
+        message: 'AUTH_FAILED',
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new RpcException({
+        code: 1003,
+        message: 'AUTH_FAILED',
+      });
     }
 
-    // Prepare permissions array
-    const permissions = user.role.rolePermissions.map(
-      (rp) => rp.permission.name,
-    );
-
     return {
-      id: user.id,
-      phone: user.phone,
-      role: user.role.name,
-      permissions,
+      user,
     };
   }
 
   @Logger('yellow')
   async signIn(signInDto: AuthDTO.Request.SignIn) {
-    const user = await this.validateUser(signInDto.phone, signInDto.password);
+    try {
+      const { user } = await this.validateUser(
+        signInDto.phone,
+        signInDto.password,
+      );
 
-    const payload = {
-      sub: user.id,
-      phone: user.phone,
-      role: user.role,
-      permissions: user.permissions,
-    };
+      const { id, phone, email, firstname, lastname, surname } = user;
 
-    return {
-      accessToken: this.jwtService.sign(payload),
-    };
+      const payload = {
+        user: {
+          id,
+          phone,
+          email,
+          firstname,
+          lastname,
+          surname,
+          role: {
+            name: user.role.name,
+          },
+        },
+        permissions: user.role.rolePermissions.map((rp) => rp.permission.name),
+      };
+
+      return {
+        accessToken: this.jwtService.sign(payload),
+        user,
+      };
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   }
 
   @Logger('yellow')
